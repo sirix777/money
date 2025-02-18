@@ -34,7 +34,7 @@ class SirixMoneyTest extends TestCase
         $this->currencyRegistryMock = $this->createMock(CurrencyRegistry::class);
         $reflection = new ReflectionClass(CurrencyRegistry::class);
         $instanceProperty = $reflection->getProperty('instance');
-        $instanceProperty->setValue($this->currencyRegistryMock);
+        $instanceProperty->setValue($reflection, $this->currencyRegistryMock);
     }
 
     /**
@@ -143,6 +143,53 @@ class SirixMoneyTest extends TestCase
     }
 
     /**
+     * @throws UnsupportedCurrencyException
+     * @throws SirixMoneyException
+     * @throws InvalidAmountException
+     */
+    public function testGetAmountReturnsAmountString(): void
+    {
+        $amount = '10.00000000002';
+        $amountWithTrailingZeros = '10.000000000020000000';
+        $currencyCode = 'ETH';
+
+        $currency = new Currency($currencyCode, 1000, 'Ethereum', 18);
+
+        $this->currencyRegistryMock
+            ->method('get')
+            ->with($currencyCode)
+            ->willReturn($currency)
+        ;
+        $money = SirixMoney::of($amount, $currencyCode);
+        $this->assertEquals($amount, SirixMoney::getAmount($money));
+        $this->assertEquals($amountWithTrailingZeros, SirixMoney::getAmount($money, false));
+    }
+
+    /**
+     * @throws UnsupportedCurrencyException
+     * @throws SirixMoneyException
+     * @throws InvalidAmountException
+     */
+    public function testGetMinorAmountReturnsMinorAmountString(): void
+    {
+        $amount = '10.00000000002';
+        $minorAmount = '10000000000020000000';
+
+        $currencyCode = 'ETH';
+
+        $currency = new Currency($currencyCode, 1000, 'Ethereum', 18);
+
+        $this->currencyRegistryMock
+            ->method('get')
+            ->with($currencyCode)
+            ->willReturn($currency)
+        ;
+
+        $money = SirixMoney::of($amount, $currencyCode);
+        $this->assertEquals($minorAmount, SirixMoney::getMinorAmount($money));
+    }
+
+    /**
      * Provides valid and edge-case amounts for testing.
      *
      * @return array<float|int|string>
@@ -157,7 +204,7 @@ class SirixMoneyTest extends TestCase
             [0.01],
             [0.00003000071],
             ['0.00003000071'],
-            [0.E501],
+            [10.00e18],
             [0.e501],
             ['0.e501'],
             ['0.E501'],

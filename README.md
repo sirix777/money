@@ -60,6 +60,24 @@ $cents = SirixMoney::ofMinor(
 
 // Check if currency is crypto
 $isCrypto = SirixMoney::isCrypto('BTC'); // returns true
+
+// Create a money object with trailing zeros
+$money = SirixMoney::of('10.90', CurrencyCode::Bch);
+
+// Get amount with trailing zeros removed (default behavior)
+$withoutZeros = SirixMoney::getAmount($money); // returns "10.9"
+
+// Get amount keeping trailing zeros
+$withZeros = SirixMoney::getAmount($money, withoutTrailingZeros: false); // returns "10.90000000"
+
+// Example with more decimal places
+$precise = SirixMoney::of('10.50000', CurrencyCode::Bch);
+echo SirixMoney::getAmount($precise); // displays: "10.5"
+echo SirixMoney::getAmount($precise, false); // displays: "10.50000000"
+
+// Minor amounts are always returned as full integers
+$minorAmount = SirixMoney::getMinorAmount($money); // returns "1050000000"
+
 ```
 
 ### Currency Registry Configuration

@@ -19,6 +19,8 @@ use Sirix\Money\Exception\SirixMoneyException;
 use Sirix\Money\Exception\UnknownCurrencyException;
 use Sirix\Money\Exception\UnsupportedCurrencyException;
 
+use function rtrim;
+
 class SirixMoney
 {
     private const DEFAULT_ROUNDING = RoundingMode::HALF_UP;
@@ -82,8 +84,25 @@ class SirixMoney
         return CurrencyRegistry::getInstance()->isCrypto($currencyCode);
     }
 
+    public static function getAmount(Money $money, bool $withoutTrailingZeros = true): string
+    {
+        return $withoutTrailingZeros
+            ? self::removeTrailingZeros((string) $money->getAmount())
+            : (string) $money->getAmount();
+    }
+
+    public static function getMinorAmount(Money $money): string
+    {
+        return (string) $money->getMinorAmount();
+    }
+
     private static function getCurrencyCode(CurrencyCode|string $currencyCode): string
     {
         return $currencyCode instanceof CurrencyCode ? $currencyCode->value : $currencyCode;
+    }
+
+    private static function removeTrailingZeros(string $amount): string
+    {
+        return rtrim(rtrim($amount, '0'), '.');
     }
 }
