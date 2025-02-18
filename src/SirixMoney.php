@@ -12,7 +12,6 @@ use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
-use Psr\Cache\InvalidArgumentException;
 use Sirix\Money\Exception\CacheException;
 use Sirix\Money\Exception\InvalidAmountException;
 use Sirix\Money\Exception\SirixMoneyException;
@@ -44,7 +43,7 @@ class SirixMoney
             throw new InvalidAmountException("Invalid amount: {$amount}. Error: " . $e->getMessage());
         } catch (\Brick\Money\Exception\UnknownCurrencyException|UnknownCurrencyException $e) {
             throw new UnsupportedCurrencyException('Unsupported currency. Error: ' . $e->getMessage());
-        } catch (InvalidArgumentException $e) {
+        } catch (\Psr\Cache\InvalidArgumentException $e) {
             throw new CacheException('Cache exception. Error: ' . $e->getMessage());
         }
     }
@@ -70,18 +69,24 @@ class SirixMoney
             throw new SirixMoneyException('Rounding necessary. Error: ' . $e->getMessage());
         } catch (DivisionByZeroException $e) {
             throw new SirixMoneyException('Division by zero. Error: ' . $e->getMessage());
-        } catch (InvalidArgumentException $e) {
+        } catch (\Psr\Cache\InvalidArgumentException $e) {
             throw new CacheException('Cache exception. Error: ' . $e->getMessage());
         }
     }
 
     /**
-     * @throws UnknownCurrencyException
-     * @throws InvalidArgumentException
+     * @throws UnsupportedCurrencyException
+     * @throws CacheException
      */
     public static function isCrypto(string $currencyCode): bool
     {
-        return CurrencyRegistry::getInstance()->isCrypto($currencyCode);
+        try {
+            return CurrencyRegistry::getInstance()->isCrypto($currencyCode);
+        } catch (\Brick\Money\Exception\UnknownCurrencyException|UnknownCurrencyException $e) {
+            throw new UnsupportedCurrencyException('Unsupported currency. Error: ' . $e->getMessage());
+        } catch (\Psr\Cache\InvalidArgumentException $e) {
+            throw new CacheException('Cache exception. Error: ' . $e->getMessage());
+        }
     }
 
     public static function getAmount(Money $money, bool $withoutTrailingZeros = true): string
