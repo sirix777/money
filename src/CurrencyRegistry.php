@@ -7,6 +7,8 @@ namespace Sirix\Money;
 use Brick\Money\Currency;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
+use Sirix\Money\Exception\CacheException;
+use Sirix\Money\Exception\SirixMoneyException;
 use Sirix\Money\Exception\UnknownCurrencyException;
 
 use function strtoupper;
@@ -49,8 +51,7 @@ class CurrencyRegistry
     }
 
     /**
-     * @throws UnknownCurrencyException
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function get(string $code): Currency
     {
@@ -75,9 +76,7 @@ class CurrencyRegistry
     }
 
     /**
-     * @throws InvalidArgumentException
-     * @throws InvalidArgumentException
-     * @throws Exception\InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function addCustomCurrency(Currency $currency, bool $isCrypto): void
     {
@@ -92,8 +91,7 @@ class CurrencyRegistry
     }
 
     /**
-     * @throws UnknownCurrencyException
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function isCrypto(string $code): bool
     {
@@ -120,7 +118,7 @@ class CurrencyRegistry
     /**
      * @return array<string, bool|int|string>
      *
-     * @throws UnknownCurrencyException
+     * @throws SirixMoneyException
      */
     public function getParams(string $code): array
     {
@@ -134,7 +132,7 @@ class CurrencyRegistry
     }
 
     /**
-     * @throws UnknownCurrencyException
+     * @throws SirixMoneyException
      */
     private function createCurrency(string $code): Currency
     {
@@ -149,7 +147,7 @@ class CurrencyRegistry
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     private function cacheCurrency(Currency $currency, ?bool $isCrypto = null): void
     {
@@ -157,7 +155,12 @@ class CurrencyRegistry
             return;
         }
 
-        $cacheItem = $this->cache->getItem($this->getCachePrefix() . $currency->getCurrencyCode());
+        try {
+            $cacheItem = $this->cache->getItem($this->getCachePrefix() . $currency->getCurrencyCode());
+        } catch (InvalidArgumentException $e) {
+            throw new CacheException('Cache error: ' . $e->getMessage());
+        }
+
         $cacheItem->set(
             [
                 'currency' => $currency,
@@ -171,7 +174,7 @@ class CurrencyRegistry
     /**
      * @return null|array<string, mixed>
      *
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     private function findCurrencyInCache(string $code): ?array
     {
@@ -179,7 +182,11 @@ class CurrencyRegistry
             return null;
         }
 
-        $cacheItem = $this->cache->getItem($this->getCachePrefix() . $code);
+        try {
+            $cacheItem = $this->cache->getItem($this->getCachePrefix() . $code);
+        } catch (InvalidArgumentException $e) {
+            throw new CacheException('Cache error: ' . $e->getMessage());
+        }
         if ($cacheItem->isHit()) {
             return $cacheItem->get();
         }

@@ -12,7 +12,6 @@ use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
-use Sirix\Money\Exception\CacheException;
 use Sirix\Money\Exception\InvalidAmountException;
 use Sirix\Money\Exception\SirixMoneyException;
 use Sirix\Money\Exception\UnknownCurrencyException;
@@ -25,8 +24,6 @@ class SirixMoney
     private const DEFAULT_ROUNDING = RoundingMode::HALF_UP;
 
     /**
-     * @throws UnsupportedCurrencyException
-     * @throws InvalidAmountException
      * @throws SirixMoneyException
      */
     public static function of(
@@ -43,8 +40,6 @@ class SirixMoney
             throw new InvalidAmountException("Invalid amount: {$amount}. Error: " . $e->getMessage());
         } catch (\Brick\Money\Exception\UnknownCurrencyException|UnknownCurrencyException $e) {
             throw new UnsupportedCurrencyException('Unsupported currency. Error: ' . $e->getMessage());
-        } catch (\Psr\Cache\InvalidArgumentException $e) {
-            throw new CacheException('Cache exception. Error: ' . $e->getMessage());
         }
     }
 
@@ -69,23 +64,18 @@ class SirixMoney
             throw new SirixMoneyException('Rounding necessary. Error: ' . $e->getMessage());
         } catch (DivisionByZeroException $e) {
             throw new SirixMoneyException('Division by zero. Error: ' . $e->getMessage());
-        } catch (\Psr\Cache\InvalidArgumentException $e) {
-            throw new CacheException('Cache exception. Error: ' . $e->getMessage());
         }
     }
 
     /**
-     * @throws UnsupportedCurrencyException
-     * @throws CacheException
+     * @throws SirixMoneyException
      */
     public static function isCrypto(string $currencyCode): bool
     {
         try {
             return CurrencyRegistry::getInstance()->isCrypto($currencyCode);
-        } catch (\Brick\Money\Exception\UnknownCurrencyException|UnknownCurrencyException $e) {
+        } catch (UnknownCurrencyException $e) {
             throw new UnsupportedCurrencyException('Unsupported currency. Error: ' . $e->getMessage());
-        } catch (\Psr\Cache\InvalidArgumentException $e) {
-            throw new CacheException('Cache exception. Error: ' . $e->getMessage());
         }
     }
 
