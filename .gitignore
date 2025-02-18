@@ -1,0 +1,6 @@
+.idea
+.phpcs-cache
+vendor/
+.phpunit.cache/
+composer.lock
+.php-cs-fixer.cache

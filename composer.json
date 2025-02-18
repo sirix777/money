@@ -1,0 +1,58 @@
+{
+    "name": "sirix/money",
+    "description": "A PHP library for handling monetary values with support for both traditional (fiat) and cryptocurrencies",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Sirix",
+            "homepage": "https://github.com/sirix777"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "brick/money": "^0.10.0",
+        "psr/cache": "^3.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.45",
+        "phpbench/phpbench": "^1.4",
+        "phpunit/phpunit": "^12.0",
+        "symfony/cache": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sirix\\Money\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sirix\\Money\\Test\\": "test/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "if [ ! -d \"tools/php-cs-fixer/vendor\" ]; then composer install --working-dir=tools/php-cs-fixer; fi",
+            "if [ ! -d \"tools/phpstan/vendor\" ]; then composer install --working-dir=tools/phpstan; fi"
+        ],
+        "post-update-cmd": [
+            "composer update --working-dir=tools/php-cs-fixer",
+            "composer update --working-dir=tools/phpstan"
+        ],
+        "benchmark": "./vendor/bin/phpbench run test/Benchmark --report=default",
+        "check": [
+            "@cs-check",
+            "@phpstan",
+            "@test"
+        ],
+        "cs-check": "export PHP_CS_FIXER_IGNORE_ENV=1 && php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --dry-run --diff",
+        "cs-fix": "export PHP_CS_FIXER_IGNORE_ENV=1 && php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv",
+        "phpstan": "php tools/phpstan/vendor/bin/phpstan",
+        "test": "phpunit --testdox --colors=always"
+    }
+}
