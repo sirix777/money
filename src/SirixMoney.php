@@ -15,6 +15,7 @@ use Sirix\Money\Exception\UnknownCurrencyException;
 use Throwable;
 
 use function rtrim;
+use function str_contains;
 
 class SirixMoney
 {
@@ -87,7 +88,11 @@ class SirixMoney
 
     private static function removeTrailingZeros(string $amount): string
     {
-        return rtrim(rtrim($amount, '0'), '.');
+        if (str_contains($amount, '.')) {
+            return rtrim(rtrim($amount, '0'), '.');
+        }
+
+        return $amount;
     }
 
     private static function wrapException(Throwable $exception, string $message): SirixMoneyException
