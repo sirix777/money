@@ -93,7 +93,11 @@ class SirixMoney
     private static function wrapException(Throwable $exception, string $message): SirixMoneyException
     {
         return match ($exception::class) {
-            CacheException::class => new CacheException($message . '. Error: ' . $exception->getMessage(), $exception->getCode(), $exception),
+            CacheException::class => new CacheException(
+                $message . '. Error: ' . $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            ),
             InvalidArgumentException::class => new InvalidArgumentException(
                 $message . '. Error: ' . $exception->getMessage(),
                 $exception->getCode(),
