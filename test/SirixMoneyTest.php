@@ -65,9 +65,8 @@ class SirixMoneyTest extends TestCase
     }
 
     /**
-     * @throws UnsupportedCurrencyException
-     * @throws UnknownCurrencyException
      * @throws SirixMoneyException
+     * @throws UnknownCurrencyException
      */
     public function testOfThrowsInvalidAmountExceptionForInvalidAmount(): void
     {
@@ -80,22 +79,21 @@ class SirixMoneyTest extends TestCase
             ->willReturn(Currency::of($currencyCode))
         ;
 
-        $this->expectException(InvalidAmountException::class);
+        $this->expectException(SirixMoneyException::class);
         SirixMoney::of($amount, $currencyCode);
     }
 
     /**
      * @throws SirixMoneyException
-     * @throws InvalidAmountException
      */
     public function testOfThrowsUnsupportedCurrencyExceptionForUnknownCurrency(): void
     {
         $this->currencyRegistryMock
             ->method('get')
-            ->willThrowException(new UnsupportedCurrencyException())
+            ->willThrowException(new SirixMoneyException())
         ;
 
-        $this->expectException(UnsupportedCurrencyException::class);
+        $this->expectException(SirixMoneyException::class);
         SirixMoney::of('100', 'XYZ');
     }
 

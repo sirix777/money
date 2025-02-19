@@ -6,18 +6,18 @@ namespace Sirix\Money\Test;
 
 use Brick\Money\Currency;
 use PHPUnit\Framework\TestCase;
-use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use Sirix\Money\CurrencyCode;
 use Sirix\Money\CurrencyRegistry;
+use Sirix\Money\Exception\SirixMoneyException;
 use Sirix\Money\Exception\UnknownCurrencyException;
 
 class CurrencyRegistryTest extends TestCase
 {
     /**
      * @throws UnknownCurrencyException
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function testGetReturnsCurrencyFromCache(): void
     {
@@ -61,7 +61,7 @@ class CurrencyRegistryTest extends TestCase
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function testGetReturnsExceptionForNonExistentCurrency(): void
     {
@@ -75,7 +75,7 @@ class CurrencyRegistryTest extends TestCase
 
     /**
      * @throws UnknownCurrencyException
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function testGetReturnsNewCurrencyWhenNotInCache(): void
     {
@@ -91,7 +91,7 @@ class CurrencyRegistryTest extends TestCase
 
     /**
      * @throws UnknownCurrencyException
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function testGetHandlesCryptoCurrenciesFromCurrencyCodeEnum(): void
     {
@@ -104,7 +104,7 @@ class CurrencyRegistryTest extends TestCase
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function testAddCustomCurrencyStoresCurrencyCorrectly(): void
     {
@@ -122,8 +122,8 @@ class CurrencyRegistryTest extends TestCase
     }
 
     /**
-     * @throws InvalidArgumentException
      * @throws \Sirix\Money\Exception\InvalidArgumentException
+     * @throws SirixMoneyException
      */
     public function testAddCustomCurrencyRejectsDuplicateCurrency(): void
     {
@@ -140,9 +140,9 @@ class CurrencyRegistryTest extends TestCase
     }
 
     /**
-     * @throws InvalidArgumentException
      * @throws \Sirix\Money\Exception\InvalidArgumentException
      * @throws UnknownCurrencyException
+     * @throws SirixMoneyException
      */
     public function testAddCustomCurrencyHandlesCryptoFlag(): void
     {
