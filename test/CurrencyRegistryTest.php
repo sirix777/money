@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionException;
 use Sirix\Money\CurrencyCode;
 use Sirix\Money\CurrencyRegistry;
+use Sirix\Money\Exception\InvalidArgumentException;
 use Sirix\Money\Exception\SirixMoneyException;
 use Sirix\Money\Exception\UnknownCurrencyException;
 
@@ -122,7 +123,7 @@ class CurrencyRegistryTest extends TestCase
     }
 
     /**
-     * @throws \Sirix\Money\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws SirixMoneyException
      */
     public function testAddCustomCurrencyRejectsDuplicateCurrency(): void
@@ -133,14 +134,14 @@ class CurrencyRegistryTest extends TestCase
         $registry = CurrencyRegistry::getInstance();
         $registry->addCustomCurrency($mockCurrency, false);
 
-        $this->expectException(\Sirix\Money\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Currency code already exists.');
 
         $registry->addCustomCurrency($mockCurrency, true);
     }
 
     /**
-     * @throws \Sirix\Money\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws UnknownCurrencyException
      * @throws SirixMoneyException
      */
