@@ -7,58 +7,58 @@ namespace Sirix\Money\Test\Benchmark;
 use PhpBench\Attributes\BeforeMethods;
 use PhpBench\Attributes\Iterations;
 use PhpBench\Attributes\Revs;
-use Sirix\Money\CurrencyCode;
+use Sirix\Money\CryptoCurrencyCode;
 
 #[BeforeMethods(['setUp'])]
 class CurrencyCodeBench
 {
-    private CurrencyCode $code;
+    private CryptoCurrencyCode $code;
 
     public function setUp(): void
     {
-        $this->code = CurrencyCode::Btc;
+        $this->code = CryptoCurrencyCode::Btc;
     }
 
     #[Revs(1000)]
     #[Iterations(5)]
     public function benchEnumCreation(): void
     {
-        $code = CurrencyCode::Btc;
+        $code = CryptoCurrencyCode::Btc;
     }
 
     #[Revs(1000)]
     #[Iterations(5)]
     public function benchFromString(): void
     {
-        $code = CurrencyCode::from('BTC');
+        $code = CryptoCurrencyCode::from('BTC');
     }
 
     #[Revs(1000)]
     #[Iterations(5)]
     public function benchTryFrom(): void
     {
-        $code = CurrencyCode::tryFrom('BTC');
+        $code = CryptoCurrencyCode::tryFrom('BTC');
     }
 
     #[Revs(1000)]
     #[Iterations(20)]
     public function benchGetValue(): void
     {
-        $value = CurrencyCode::Btc->value;
+        $value = CryptoCurrencyCode::Btc->value;
     }
 
     #[Revs(1000)]
     #[Iterations(5)]
     public function benchGetCases(): void
     {
-        $cases = CurrencyCode::cases();
+        $cases = CryptoCurrencyCode::cases();
     }
 
     #[Revs(1000)]
     #[Iterations(20)]
     public function benchComparison(): void
     {
-        $result = CurrencyCode::Btc === $this->code;
+        $result = CryptoCurrencyCode::Btc === $this->code;
     }
 
     #[Revs(1000)]
@@ -66,7 +66,7 @@ class CurrencyCodeBench
     public function benchMatchExpression(): void
     {
         $result = match ($this->code) {
-            CurrencyCode::Btc => true,
+            CryptoCurrencyCode::Btc => true,
             default => false,
         };
     }

@@ -13,9 +13,9 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
-use Sirix\Money\CurrencyCode;
 use Sirix\Money\CurrencyRegistry;
 use Sirix\Money\Exception\UnknownCurrencyException;
+use Sirix\Money\FiatCurrencyCode;
 
 class CurrencyRegistryPsrCacheTest extends TestCase
 {
@@ -45,7 +45,7 @@ class CurrencyRegistryPsrCacheTest extends TestCase
      */
     public function testCurrencyIsSavedToPsrCache(): void
     {
-        $code = CurrencyCode::Usd->value;
+        $code = FiatCurrencyCode::Usd->value;
         $cachePool = $this->createMockCachePool();
 
         $cacheItem = $this->createMockCacheItem();
@@ -85,7 +85,7 @@ class CurrencyRegistryPsrCacheTest extends TestCase
      */
     public function testCurrencyIsLoadedFromPsrCache(): void
     {
-        $code = CurrencyCode::Usd->value;
+        $code = FiatCurrencyCode::Usd->value;
         $currency = new Currency($code, 840, 'US Dollar', 2);
 
         $cachePool = $this->createMockCachePool();

@@ -26,7 +26,7 @@ class SirixMoney
      */
     public static function of(
         BigNumber|float|int|string $amount,
-        CurrencyCode|string $currencyCode,
+        CryptoCurrencyCode|FiatCurrencyCode|string $currencyCode,
         ?Context $context = null,
         RoundingMode $rounding = self::DEFAULT_ROUNDING,
     ): Money {
@@ -44,7 +44,7 @@ class SirixMoney
      */
     public static function ofMinor(
         BigNumber|float|int|string $amount,
-        CurrencyCode|string $currencyCode,
+        CryptoCurrencyCode|FiatCurrencyCode|string $currencyCode,
         ?Context $context = null,
         RoundingMode $roundingMode = self::DEFAULT_ROUNDING,
     ): Money {
@@ -81,9 +81,13 @@ class SirixMoney
         return (string) $money->getMinorAmount();
     }
 
-    private static function getCurrencyCode(CurrencyCode|string $currencyCode): string
+    private static function getCurrencyCode(CryptoCurrencyCode|FiatCurrencyCode|string $currencyCode): string
     {
-        return $currencyCode instanceof CurrencyCode ? $currencyCode->value : $currencyCode;
+        if ($currencyCode instanceof FiatCurrencyCode || $currencyCode instanceof CryptoCurrencyCode) {
+            return $currencyCode->value;
+        }
+
+        return $currencyCode;
     }
 
     private static function removeTrailingZeros(string $amount): string

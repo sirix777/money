@@ -8,11 +8,12 @@ use Brick\Money\Currency;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
-use Sirix\Money\CurrencyCode;
+use Sirix\Money\CryptoCurrencyCode;
 use Sirix\Money\CurrencyRegistry;
 use Sirix\Money\Exception\InvalidArgumentException;
 use Sirix\Money\Exception\SirixMoneyException;
 use Sirix\Money\Exception\UnknownCurrencyException;
+use Sirix\Money\FiatCurrencyCode;
 
 class CurrencyRegistryTest extends TestCase
 {
@@ -22,7 +23,7 @@ class CurrencyRegistryTest extends TestCase
      */
     public function testGetReturnsCurrencyFromCache(): void
     {
-        $currencyCode = CurrencyCode::Usd->value;
+        $currencyCode = FiatCurrencyCode::Usd->value;
         $mockCurrency = new Currency($currencyCode, 840, 'United States Dollar', 2);
 
         $result = CurrencyRegistry::getInstance()->get($currencyCode);
@@ -80,7 +81,7 @@ class CurrencyRegistryTest extends TestCase
      */
     public function testGetReturnsNewCurrencyWhenNotInCache(): void
     {
-        $currencyCode = CurrencyCode::Eur->value;
+        $currencyCode = FiatCurrencyCode::Eur->value;
 
         CurrencyRegistry::getInstance()->clearAllCaches();
 
@@ -96,7 +97,7 @@ class CurrencyRegistryTest extends TestCase
      */
     public function testGetHandlesCryptoCurrenciesFromCurrencyCodeEnum(): void
     {
-        $cryptoCurrencyCode = CurrencyCode::Btc->value;
+        $cryptoCurrencyCode = CryptoCurrencyCode::Btc->value;
 
         $result = CurrencyRegistry::getInstance()->get($cryptoCurrencyCode);
 

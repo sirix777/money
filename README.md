@@ -32,23 +32,24 @@ composer require sirix/money
 ```php
 use Brick\Money\Context\AutoContext;
 use Brick\Money\Context\CustomContext;
-use Sirix\Money\CurrencyCode;
+use Sirix\Money\FiatCurrencyCode;
+use Sirix\Money\CryptoCurrencyCode;
 use Sirix\Money\SirixMoney;
 use Brick\Math\RoundingMode;
 
 // Basic usage with default context and rounding
-$amount = SirixMoney::of(10.99, CurrencyCode::Usd);
+$amount = SirixMoney::of(10.99, FiatCurrencyCode::Usd);
 
 // Advanced usage with custom context and rounding mode
 $amount = SirixMoney::of(
     amount: 10.99,
-    currencyCode: CurrencyCode::Usd,
+    currencyCode: FiatCurrencyCode::Usd,
     context: new CustomContext(scale: 5), // Custom context
     rounding: RoundingMode::UP
 );
 
 // Create from minor units (cents) with default settings
-$cents = SirixMoney::ofMinor(1099, CurrencyCode::Usd);
+$cents = SirixMoney::ofMinor(1099, FiatCurrencyCode::Usd);
 
 // Create from minor units with custom context and rounding
 $cents = SirixMoney::ofMinor(
@@ -62,7 +63,7 @@ $cents = SirixMoney::ofMinor(
 $isCrypto = SirixMoney::isCrypto('BTC'); // returns true
 
 // Create a money object with trailing zeros
-$money = SirixMoney::of('10.90', CurrencyCode::Bch);
+$money = SirixMoney::of('10.90', CryptoCurrencyCode::Bch);
 
 // Get amount with trailing zeros removed (default behavior)
 $withoutZeros = SirixMoney::getAmount($money); // returns "10.9"
@@ -71,7 +72,7 @@ $withoutZeros = SirixMoney::getAmount($money); // returns "10.9"
 $withZeros = SirixMoney::getAmount($money, withoutTrailingZeros: false); // returns "10.90000000"
 
 // Example with more decimal places
-$precise = SirixMoney::of('10.50000', CurrencyCode::Bch);
+$precise = SirixMoney::of('10.50000', CryptoCurrencyCode::Bch);
 echo SirixMoney::getAmount($precise); // displays: "10.5"
 echo SirixMoney::getAmount($precise, false); // displays: "10.50000000"
 
@@ -128,17 +129,20 @@ $registry->setCache($cachePool);
 $registry->setCachePrefix('my_app_');
 ```
 
-# CurrencyCode Enum
+# Currency Code Enums
 
-An enum class that defines standardized currency codes for cryptocurrencies.
+Two enum classes that define standardized currency codes for fiat currencies and cryptocurrencies.
 
 ## Special Naming Conventions
 
-### _CRYPTO Suffix
-When a cryptocurrency code conflicts with an existing fiat currency code, the suffix `_CRYPTO` is appended to differentiate it. For example:
-- `MNT_CRYPTO` - The cryptocurrency version of MNT (to distinguish from Mongolian Tugrik)
-- `SOS_CRYPTO` - The cryptocurrency version of SOS (to distinguish from Somali Shilling)
-- `ERN_CRYPTO` - The cryptocurrency version of ERN (to distinguish from Eritrean Nakfa)
+### Separate Enums for Fiat and Crypto Currencies
+To handle cases where a cryptocurrency code conflicts with an existing fiat currency code (like MNT, SOS, ERN), we use separate enums:
+- `FiatCurrencyCode::Mnt` - The fiat currency Mongolian Tugrik (MNT)
+- `CryptoCurrencyCode::Mnt` - The cryptocurrency version of MNT
+- `FiatCurrencyCode::Sos` - The fiat currency Somali Shilling (SOS)
+- `CryptoCurrencyCode::Sos` - The cryptocurrency version of SOS
+- `FiatCurrencyCode::Ern` - The fiat currency Eritrean Nakfa (ERN)
+- `CryptoCurrencyCode::Ern` - The cryptocurrency version of ERN
 
 ### Numeric Prefix Handling
 For cryptocurrency codes that begin with numbers (like `1INCH`), the enum case name uses a descriptive word format instead of the number for PHP compatibility:
@@ -148,11 +152,12 @@ For cryptocurrency codes that begin with numbers (like `1INCH`), the enum case n
 This is because PHP enum cases cannot start with a number, so we use a readable word representation while preserving the actual cryptocurrency code value.
 
 ## Documentation
-For complete information about working with currencies in the Sirix Money library, including how to handle both cryptocurrency and fiat currency values, please refer to the [CurrencyCode enum documentation](./docs/CurrencyCode.md).
+For complete information about working with currencies in the Sirix Money library, including how to handle both cryptocurrency and fiat currency values, please refer to the currency code documentation in the docs directory.
 
 ## Related Resources
 - [README.md](README.md) - Main library documentation and usage examples
-- [CurrencyCode.md](./docs/CurrencyCode.md) - Detailed documentation about currency codes and their usage
+- [FiatCurrencyCode.md](./docs/FiatCurrencyCode.md) - Detailed documentation about fiat currency codes
+- [CryptoCurrencyCode.md](./docs/CryptoCurrencyCode.md) - Detailed documentation about cryptocurrency codes
 - [FullCryptoCurrencyList.md](./docs/FullCryptoCurrencyList.md) - Complete List of Available Cryptocurrency Codes
 - [FullFiatCurrencyList.md](./docs/FullFiatCurrencyList.md) - Complete List of Available Fiat Currency Codes
 

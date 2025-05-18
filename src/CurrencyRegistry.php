@@ -65,7 +65,7 @@ class CurrencyRegistry
             return $this->returnCurrency($cachedCurrency);
         }
 
-        if (null === CurrencyCode::tryFrom($code)) {
+        if (null === FiatCurrencyCode::tryFrom($code) && null === CryptoCurrencyCode::tryFrom($code)) {
             throw new UnknownCurrencyException("Can't get Currency with code {$code}. Unknown currency.");
         }
 
@@ -80,7 +80,9 @@ class CurrencyRegistry
      */
     public function addCustomCurrency(Currency $currency, bool $isCrypto): void
     {
-        if (null !== CurrencyCode::tryFrom($currency->getCurrencyCode()) || isset($this->customCurrencies[$currency->getCurrencyCode()])) {
+        if (null !== FiatCurrencyCode::tryFrom($currency->getCurrencyCode())
+            || null !== CryptoCurrencyCode::tryFrom($currency->getCurrencyCode())
+            || isset($this->customCurrencies[$currency->getCurrencyCode()])) {
             throw new Exception\InvalidArgumentException('Currency code already exists.');
         }
 
@@ -95,6 +97,8 @@ class CurrencyRegistry
      */
     public function isCrypto(string $code): bool
     {
+        $code = strtoupper($code);
+
         if (isset($this->customCurrencies[$code])) {
             return $this->returnIsCrypto($this->customCurrencies[$code]);
         }
@@ -105,9 +109,17 @@ class CurrencyRegistry
             }
         }
 
-        $params = $this->getParams($code);
+        // Check if it's a cryptocurrency
+        if (null !== CryptoCurrencyCode::tryFrom($code)) {
+            return true;
+        }
 
-        return (bool) $params['isCrypto'];
+        // Check if it's a fiat currency
+        if (null !== FiatCurrencyCode::tryFrom($code)) {
+            return false;
+        }
+
+        throw new UnknownCurrencyException("Can't determine if currency is crypto: {$code}. Unknown currency.");
     }
 
     public function clearAllCaches(): void
@@ -122,13 +134,19 @@ class CurrencyRegistry
      */
     public function getParams(string $code): array
     {
-        $params = CurrencyCode::tryFrom($code)?->getParams() ?? null;
+        $code = strtoupper($code);
 
-        if (null === $params) {
-            throw new UnknownCurrencyException("Can't get Currency with code {$code}. Unknown currency.");
+        // Check if it's a cryptocurrency
+        if (null !== $cryptoCode = CryptoCurrencyCode::tryFrom($code)) {
+            return $cryptoCode->getParams();
         }
 
-        return $params;
+        // Check if it's a fiat currency
+        if (null !== $fiatCode = FiatCurrencyCode::tryFrom($code)) {
+            return $fiatCode->getParams();
+        }
+
+        throw new UnknownCurrencyException("Can't get Currency with code {$code}. Unknown currency.");
     }
 
     /**

@@ -2,11 +2,10 @@
 
 ## Special Naming Conventions
 
-### _CRYPTO Suffix
-When a cryptocurrency code conflicts with an existing fiat currency code, the suffix `_CRYPTO` is appended to differentiate it. For example:
-- `MNT_CRYPTO` - The cryptocurrency version of MNT (to distinguish from Mongolian Tugrik)
-- `SOS_CRYPTO` - The cryptocurrency version of SOS (to distinguish from Somali Shilling)
-- `ERN_CRYPTO` - The cryptocurrency version of ERN (to distinguish from Eritrean Nakfa)
+### Previous _CRYPTO Suffix
+Previously, when a cryptocurrency code conflicted with an existing fiat currency code, the suffix `_CRYPTO` was appended to differentiate it. However, in the current implementation, these codes have been simplified:
+- `MNT` - Mantle (previously MNT_CRYPTO)
+- `ERN` - Ethernity Chain (previously ERN_CRYPTO)
 
 ### Numeric Prefix Handling
 For cryptocurrency codes that begin with numbers (like `1INCH`), the enum case name uses a descriptive word format instead of the number for PHP compatibility:
@@ -36,14 +35,13 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `APT` - Aptos
 - `QNT` - Quant
 - `RUNE` - THORChain
-- `SEI` - Sei
+- `SEI` - Sei Network
 - `INJ` - Injective
 - `STX` - Stacks
-- `BSV` - Bitcoin SV
 - `XTZ` - Tezos
 - `KAVA` - Kava
 - `FLOW` - Flow
-- `MINA` - Mina
+- `MINA` - Mina Protocol
 - `NEO` - Neo
 - `IOTA` - IOTA
 - `HNT` - Helium
@@ -59,55 +57,17 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `COTI` - COTI
 - `TRB` - Tellor
 - `ORN` - Orion Protocol
-- `MIR` - Mirror Protocol
-- `BADGER` - Badger DAO
-- `ALPHA` - Alpha Finance
-- `RAD` - Radicle
-- `KP3R` - Keep3rV1
-- `FARM` - Harvest Finance
-- `BORING` - BoringDAO
-- `TOKE` - Tokemak
-- `IDEX` - IDEX
-- `RARI` - Rarible
-- `ASM` - Assemble Protocol
-- `LPT` - Livepeer
-- `RBN` - Ribbon Finance
-- `BTRST` - Braintrust
-- `HIGH` - Highstreet
-- `ACH` - Alchemy Pay
-- `XYO` - XYO
-- `SOS_CRYPTO` - OpenDAO
-- `ERN_CRYPTO` - Ethernity Chain
-- `DUSK` - Dusk Network
-- `AIOZ` - AIOZ Network
-- `REQ` - Request
-- `DIA` - DIA
-- `MDT` - Measurable Data Token
-- `LTO` - LTO Network
-- `BOND` - BarnBridge
-- `DREP` - DREP
-- `SFP` - SafePal
-- `TLM` - Alien Worlds
-- `GHST` - Aavegotchi
-- `RAMP` - RAMP
-- `QUICK` - QuickSwap
-- `FXS` - Frax Share
-- `BZRX` - bZx Protocol
-- `OGN` - Origin Protocol
-- `HOT` - Holo
-- `CELR` - Celer Network
-- `ARPA` - ARPA Chain
-- `KEEP` - Keep Network
-- `NU` - NuCypher
-- `MATH` - MATH
-- `AKT` - Akash Network
-- `REN` - Ren
-- `SRM` - Serum
-- `RAY` - Raydium
-- `COVAL` - Circuits of Value
-- `TOMO` - TomoChain
-- `HEGIC` - Hegic
-- `OM` - MANTRA DAO
+- `TAO` - Bittensor
+- `KAS` - Kaspa
+- `POL` - Polygon
+- `RENDER` - Render Token
+- `JUP` - Jupiter
+- `ARB` - Arbitrum
+- `THETA` - Theta Network
+- `MNT` - Mantle
+- `EGLD` - MultiversX (Elrond)
+- `IMX` - Immutable X
+- `SUI` - Sui
 
 ### Stablecoins
 - `USDT` - Tether
@@ -119,27 +79,28 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `AAVE` - Aave
 - `UNI` - Uniswap
 - `SUSHI` - SushiSwap
-- `CRV` - Curve
+- `CRV` - Curve DAO Token
 - `BAL` - Balancer
 - `YFI` - yearn.finance
 - `COMP` - Compound
 - `MKR` - Maker
-- `LDO` - Lido
+- `LDO` - Lido DAO
 - `SNX` - Synthetix
 - `1INCH` - 1inch
 - `DYDX` - dYdX
+- `FXS` - Frax Share
 
 ### Exchange Tokens
-- `OKB` - OKB Token
-- `GT` - Gate Token
-- `CRO` - Crypto.com Coin
+- `OKB` - OKB
+- `GT` - GateToken
+- `CRO` - Cronos
 
 ### Layer 1/2 Solutions
-- `NEAR` - NEAR Protocol
+- `NEAR` - Near Protocol
 - `ATOM` - Cosmos
 - `FIL` - Filecoin
 - `ALGO` - Algorand
-- `EGLD` - Elrond
+- `EGLD` - MultiversX (Elrond)
 - `HBAR` - Hedera
 - `ICP` - Internet Computer
 - `IMX` - Immutable X
@@ -150,8 +111,8 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `GRT` - The Graph
 - `AXS` - Axie Infinity
 - `KSM` - Kusama
-- `RNDR` - Render Token
-- `GALA` - Gala Games
+- `RNDR` - Render Network
+- `GALA` - Gala
 - `MANA` - Decentraland
 - `SAND` - The Sandbox
 - `APE` - ApeCoin
@@ -165,11 +126,11 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `ANKR` - Ankr
 - `PERP` - Perpetual Protocol
 - `MASK` - Mask Network
-- `JASMY` - JasmyCoin
-- `GTC` - GitCoin
+- `GTC` - Gitcoin
 - `CTSI` - Cartesi
 - `BICO` - Biconomy
 - `CFG` - Centrifuge
+- `POL` - Polygon
 - `LRC` - Loopring
 - `RLC` - iExec
 - `NMR` - Numeraire
@@ -197,12 +158,15 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `STORJ` - Storj
 - `AUDIO` - Audius
 - `OCEAN` - Ocean Protocol
+- `AKT` - Akash Network
 
 ### Oracle & Data
 - `LINK` - Chainlink
 - `GRT` - The Graph
 - `API3` - API3
 - `BAND` - Band Protocol
+- `DIA` - DIA
+- `MDT` - Measurable Data Token
 
 ### Meme Coins
 - `DOGE` - Dogecoin
@@ -213,6 +177,7 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `ATOM` - Cosmos
 - `RUNE` - THORChain
 - `KSM` - Kusama
+- `REN` - Ren
 
 ### Other Notable Tokens
 - `CHZ` - Chiliz
@@ -222,31 +187,84 @@ This is because PHP enum cases cannot start with a number, so we use a readable 
 - `ANKR` - Ankr
 - `PERP` - Perpetual Protocol
 - `MASK` - Mask Network
-- `JASMY` - JasmyCoin
+- `TOKE` - Tokemak
+- `IDEX` - IDEX
+- `RARI` - Rarible
+- `XYO` - XYO Network
+- `ACH` - Alchemy Pay
+- `ASM` - Assemble Protocol
+- `LPT` - Livepeer
+- `RBN` - Ribbon Finance
+- `BTRST` - Braintrust
+- `HIGH` - Highstreet
+- `RARE` - SuperRare
 
 ### Development & Platform Tokens
-- `GTC` - GitCoin
+- `GTC` - Gitcoin
 - `CTSI` - Cartesi
 - `BICO` - Biconomy
 - `CFG` - Centrifuge
 
 ### Specialized Tokens
 - `LRC` - Loopring
-- `RLC` - iExec
+- `RLC` - iExec RLC
 - `NMR` - Numeraire
 - `MLN` - Enzyme
 - `POND` - Marlin
 - `SPELL` - Spell Token
-- `RARE` - SuperRare
 - `TRIBE` - Tribe
-- `FORTH` - Ampleforth Governance
+- `FORTH` - Ampleforth Governance Token
+- `BOND` - BarnBridge
+- `FARM` - Harvest Finance
+- `KP3R` - Keep3rV1
+- `RAD` - Radicle
+- `ALPHA` - Alpha Venture DAO
+- `BADGER` - Badger DAO
+- `MIR` - Mirror Protocol
 
 ### Additional Tokens
 - `VRA` - Verasity
 - `WAXP` - WAX
-- `SLP` - Smooth Love Potion
 - `C98` - Coin98
-- `ALICE` - My Neighbor Alice
+- `ALICE` - MyNeighborAlice
 - `TVK` - Terra Virtua Kolect
 - `POLS` - Polkastarter
 - `CREAM` - Cream Finance
+- `DUSK` - Dusk Network
+- `AIOZ` - AIOZ Network
+- `REQ` - Request
+- `ERN` - Ethernity Chain
+- `LTO` - LTO Network
+- `DREP` - Drep
+- `SFP` - SafePal
+- `TLM` - Alien Worlds
+- `GHST` - Aavegotchi
+- `RAMP` - RAMP
+- `QUICK` - QuickSwap
+- `BZRX` - bZx Protocol
+- `OGN` - Origin Protocol
+- `HOT` - Holo
+- `CELR` - Celer Network
+- `ARPA` - ARPA Chain
+- `KEEP` - Keep Network
+- `NU` - NuCypher
+- `MATH` - Math Wallet
+- `COVAL` - Circuits of Value
+- `TOMO` - TomoChain
+- `HEGIC` - Hegic
+- `OM` - MANTRA DAO
+- `SRM` - Serum
+- `RAY` - Raydium
+- `ASM` - Assemble Protocol
+- `LPT` - Livepeer
+- `RBN` - Ribbon Finance
+- `BTRST` - Braintrust
+- `HIGH` - Highstreet
+- `ACH` - Alchemy Pay
+- `XYO` - XYO Network
+- `TOKE` - Tokemak
+- `IDEX` - IDEX
+- `RARI` - Rarible
+- `AKT` - Akash Network
+- `MDT` - Measurable Data Token
+- `DIA` - DIA
