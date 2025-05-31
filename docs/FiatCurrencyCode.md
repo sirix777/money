@@ -15,6 +15,13 @@ $isValid = FiatCurrencyCode::tryFrom('USD') !== null; // Returns true
 
 // Get all available currency codes
 $allCases = FiatCurrencyCode::cases();
+
+// Create from numeric code
+$usd = FiatCurrencyCode::fromNumericCode(840); // Returns FiatCurrencyCode::Usd
+
+// Alternative: use CurrencyCode utility class
+use Sirix\Money\CurrencyCode;
+$usd = CurrencyCode::fromNumericCode(840); // Returns FiatCurrencyCode::Usd
 ```
 
 ## Available Fiat Currency Codes

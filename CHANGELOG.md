@@ -5,6 +5,13 @@ All notable changes to the Sirix Money library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 31/05/2025
+
+### Added
+- New `CurrencyCode` utility class for creating currency code enum objects from numeric codes
+- Added `fromNumericCode` method to both `CryptoCurrencyCode` and `FiatCurrencyCode` enums
+- Updated documentation to include examples of the new functionality
+
 ## [1.1.0] - 18/05/2025
 
 ### Added

@@ -129,9 +129,9 @@ $registry->setCache($cachePool);
 $registry->setCachePrefix('my_app_');
 ```
 
-# Currency Code Enums
+# Currency Code Enums and Utilities
 
-Two enum classes that define standardized currency codes for fiat currencies and cryptocurrencies.
+Two enum classes that define standardized currency codes for fiat currencies and cryptocurrencies, plus a utility class for creating currency code enum objects from numeric codes.
 
 ## Special Naming Conventions
 
@@ -151,6 +151,23 @@ For cryptocurrency codes that begin with numbers (like `1INCH`), the enum case n
 
 This is because PHP enum cases cannot start with a number, so we use a readable word representation while preserving the actual cryptocurrency code value.
 
+### CurrencyCode Utility Class
+The `CurrencyCode` class provides a utility method for creating currency code enum objects from numeric codes:
+
+```php
+use Sirix\Money\CurrencyCode;
+
+// Create a FiatCurrencyCode from a numeric code
+$usd = CurrencyCode::fromNumericCode(840); // Returns FiatCurrencyCode::Usd
+
+// Create a CryptoCurrencyCode from a numeric code
+$btc = CurrencyCode::fromNumericCode(1004); // Returns CryptoCurrencyCode::Btc
+```
+
+The class automatically determines whether to create a FiatCurrencyCode or CryptoCurrencyCode based on the numeric code:
+- Numeric codes < 1000 are treated as fiat currencies
+- Numeric codes >= 1000 are treated as cryptocurrencies
+
 ## Documentation
 For complete information about working with currencies in the Sirix Money library, including how to handle both cryptocurrency and fiat currency values, please refer to the currency code documentation in the docs directory.
 
@@ -158,6 +175,7 @@ For complete information about working with currencies in the Sirix Money librar
 - [README.md](README.md) - Main library documentation and usage examples
 - [FiatCurrencyCode.md](./docs/FiatCurrencyCode.md) - Detailed documentation about fiat currency codes
 - [CryptoCurrencyCode.md](./docs/CryptoCurrencyCode.md) - Detailed documentation about cryptocurrency codes
+- [CurrencyCode.md](./docs/CurrencyCode.md) - Detailed documentation about the CurrencyCode utility class
 - [FullCryptoCurrencyList.md](./docs/FullCryptoCurrencyList.md) - Complete List of Available Cryptocurrency Codes
 - [FullFiatCurrencyList.md](./docs/FullFiatCurrencyList.md) - Complete List of Available Fiat Currency Codes
 

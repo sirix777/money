@@ -15,6 +15,13 @@ $isValid = CryptoCurrencyCode::tryFrom('BTC') !== null; // Returns true
 
 // Get all available currency codes
 $allCases = CryptoCurrencyCode::cases();
+
+// Create from numeric code
+$btc = CryptoCurrencyCode::fromNumericCode(1004); // Returns CryptoCurrencyCode::Btc
+
+// Alternative: use CurrencyCode utility class
+use Sirix\Money\CurrencyCode;
+$btc = CurrencyCode::fromNumericCode(1004); // Returns CryptoCurrencyCode::Btc
 ```
 
 ## Available Cryptocurrency Codes
