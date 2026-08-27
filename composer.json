@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "brick/math": "^0.19.1",
+        "brick/math": "^0.18 || ^0.19",
         "brick/money": "^0.14.1"
     },
     "require-dev": {
