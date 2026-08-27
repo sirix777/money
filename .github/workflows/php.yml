@@ -12,21 +12,46 @@ permissions:
 jobs:
   build:
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.2'
+            dependencies: locked
+            formatter: false
+          - php: '8.3'
+            dependencies: lowest
+            formatter: true
+
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: |
+        if [ "${{ matrix.dependencies }}" = "lowest" ]; then
+          composer update --prefer-lowest --prefer-dist --no-progress --no-scripts
+        else
+          composer install --prefer-dist --no-progress --no-scripts
+        fi
 
-    - name: Install php-cs-fixer
-      run: composer install --working-dir=tools/php-cs-fixer
+    - name: Install PHPStan
+      run: composer install --working-dir=tools/phpstan --prefer-dist --no-progress
+
+    - name: Install PHP-CS-Fixer
+      if: matrix.formatter
+      run: composer install --working-dir=tools/php-cs-fixer --prefer-dist --no-progress
 
     - name: Run cs-check
+      if: matrix.formatter
       run: composer cs-check
 
     - name: Run phpstan
@@ -34,4 +59,3 @@ jobs:
 
     - name: Run phpunit
       run: composer test
-

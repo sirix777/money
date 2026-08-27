@@ -1,185 +1,112 @@
 # Sirix Money
 
-A PHP library for handling monetary values with support for both traditional (fiat) and cryptocurrencies. Built on top of [brick/money](https://github.com/brick/money) with additional features and safeguards.
+Flexible, framework-agnostic currency catalogs and money factories for [Brick Money](https://github.com/brick/money). It provides a small, explicit application boundary around Brick's precise monetary types: resolve currencies from immutable catalogs, create money in major or minor units, and format amounts without coupling the application to a framework or global registry.
 
-## Features
+## Why Sirix Money
 
-- Safe and accurate monetary value handling
-- Support for both traditional and cryptocurrency values
-- Configurable caching system
-- Custom currency registration
-- Proper handling of minor currency units (cents, satoshi, etc.)
-- Strict type checking and comprehensive error handling
+- **Safe monetary input** - accepts `BigNumber`, integers, and decimal strings while rejecting floats before their binary precision can alter a value.
+- **Application-owned currencies** - use the built-in ISO and digital currencies, define a complete custom catalog, or compose both with clear duplicate detection.
+- **Explicit, predictable construction** - create `Money` through `MoneyFactory` with documented rounding behaviour and support for major and minor units.
+- **Framework and worker friendly** - immutable catalogs have no cache, container, or static global state, so they can be created once at bootstrap and shared safely.
 
-## Requirements
+Requires PHP 8.2 and `brick/money`.
 
-- PHP 8.1 or higher
-- [brick/money](https://github.com/brick/money)
-- [psr/cache](https://github.com/php-fig/cache) (for caching support)
-
-## Installation
-
-Install via Composer:
+## Install
 
 ```bash
-composer require sirix/money
+composer require sirix/money:^2.0
 ```
 
-## Basic Usage
+For a source checkout, install the package normally. Development tools are opt-in and require PHP 8.3+:
 
-### Creating Monetary Values
+```bash
+composer install
+composer tools
+```
+
+## Quick start
 
 ```php
-use Brick\Money\Context\AutoContext;
-use Brick\Money\Context\CustomContext;
-use Sirix\Money\FiatCurrencyCode;
-use Sirix\Money\CryptoCurrencyCode;
-use Sirix\Money\SirixMoney;
-use Brick\Math\RoundingMode;
+use Sirix\Money\Currency\DefaultCurrencyCatalog;
+use Sirix\Money\MoneyFactory;
+use Sirix\Money\MoneyFormatter;
 
-// Basic usage with default context and rounding
-$amount = SirixMoney::of(10.99, FiatCurrencyCode::Usd);
-
-// Advanced usage with custom context and rounding mode
-$amount = SirixMoney::of(
-    amount: 10.99,
-    currencyCode: FiatCurrencyCode::Usd,
-    context: new CustomContext(scale: 5), // Custom context
-    rounding: RoundingMode::UP
-);
-
-// Create from minor units (cents) with default settings
-$cents = SirixMoney::ofMinor(1099, FiatCurrencyCode::Usd);
-
-// Create from minor units with custom context and rounding
-$cents = SirixMoney::ofMinor(
-    amount: 1099,
-    currencyCode: 'USD',
-    context: new AutoContext(),
-    roundingMode: RoundingMode::DOWN
-);
-
-// Check if currency is crypto
-$isCrypto = SirixMoney::isCrypto('BTC'); // returns true
-
-// Create a money object with trailing zeros
-$money = SirixMoney::of('10.90', CryptoCurrencyCode::Bch);
-
-// Get amount with trailing zeros removed (default behavior)
-$withoutZeros = SirixMoney::getAmount($money); // returns "10.9"
-
-// Get amount keeping trailing zeros
-$withZeros = SirixMoney::getAmount($money, withoutTrailingZeros: false); // returns "10.90000000"
-
-// Example with more decimal places
-$precise = SirixMoney::of('10.50000', CryptoCurrencyCode::Bch);
-echo SirixMoney::getAmount($precise); // displays: "10.5"
-echo SirixMoney::getAmount($precise, false); // displays: "10.50000000"
-
-// Minor amounts are always returned as full integers
-$minorAmount = SirixMoney::getMinorAmount($money); // returns "1050000000"
+$factory = new MoneyFactory(new DefaultCurrencyCatalog());
+$usd = $factory->of('10.90', 'usd');
+echo (new MoneyFormatter())->amount($usd); // 10.9
 
 ```
 
-### Currency Registry Configuration
+`MoneyFactory` uses `HALF_UP` by default, except that `AutoContext` uses Brick's required `UNNECESSARY` rounding mode when no mode is supplied. Amounts must be `BigNumber`, `int`, or decimal `string`; floats are rejected even for applications that do not enable strict PHP types.
+
+## Build your own catalog
+
+An `ArrayCurrencyCatalog` can be the complete currency universe for an application. Use numeric code `0` when a custom currency has no numeric identifier.
 
 ```php
-use Sirix\Money\CurrencyRegistry;
 use Brick\Money\Currency;
+use Sirix\Money\Currency\ArrayCurrencyCatalog;
+use Sirix\Money\MoneyFactory;
 
-// Get the registry instance
-$registry = CurrencyRegistry::getInstance();
+$catalog = new ArrayCurrencyCatalog(
+    new Currency('POINT', 0, 'Reward points', 0),
+    new Currency('CREDIT', 9001, 'Store credit', 2),
+);
 
-// Configure caching
-$registry->setCache($psr6CacheImplementation);
-$registry->setCachePrefix('custom_prefix_'); //change cache prefix (if necessary)
-$registry->setCacheTtl(7200); //set cache ttl (default: 86400 sec)
-// Add custom currency
-$customCurrency = new Currency('XYZ', 999, 'Custom Currency', 2);
-$registry->addCustomCurrency($customCurrency, true); // true for crypto, false for fiat
+$money = (new MoneyFactory($catalog))->of('12.50', 'CREDIT');
 ```
 
-## Error Handling
-
-The library uses specific exceptions for different error cases:
-
-- `UnknownCurrencyException` - When using an unsupported currency
-- `InvalidAmountException` - When providing invalid monetary amounts
-- `UnsupportedCurrencyException` - When attempting to use an unsupported currency
-- `CacheException` - When cache operations fail
-- `SirixMoneyException` - Base exception class for general errors
-
-## Features in Detail
-
-### Default Rounding Mode
-
-The library uses `RoundingMode::HALF_UP` as the default rounding mode. This can be overridden by passing a different rounding mode to the `of()` or `ofMinor()` methods.
-
-### Context Support
-
-Both `of()` and `ofMinor()` methods support an optional `Context` parameter, allowing you to specify custom decimal places and other context-specific settings.
-
-### Cache Integration
-
-The library supports PSR-6 compatible cache implementations:
+To add application currencies to the built-in ISO and digital seed, compose catalogs explicitly. Duplicate canonical string or non-zero numeric codes fail at bootstrap. String codes are not restricted to enum-shaped names.
 
 ```php
-$registry = CurrencyRegistry::getInstance();
-$registry->setCache($cachePool);
-$registry->setCachePrefix('my_app_');
+use Brick\Money\Currency;
+use Sirix\Money\Currency\ArrayCurrencyCatalog;
+use Sirix\Money\Currency\CompositeCurrencyCatalog;
+use Sirix\Money\Currency\DefaultCurrencyCatalog;
+use Sirix\Money\MoneyFactory;
+
+$catalog = new CompositeCurrencyCatalog(
+    new DefaultCurrencyCatalog(),
+    new ArrayCurrencyCatalog(new Currency('POINT', 0, 'Reward points', 0)),
+);
+
+$factory = new MoneyFactory($catalog);
+$points = $factory->of(100, 'POINT');
 ```
 
-# Currency Code Enums and Utilities
+Use `CurrencyCatalogBuilder::replace()` only during bootstrap when deliberately replacing an existing definition.
 
-Two enum classes that define standardized currency codes for fiat currencies and cryptocurrencies, plus a utility class for creating currency code enum objects from numeric codes.
+## Major and minor units
 
-## Special Naming Conventions
-
-### Separate Enums for Fiat and Crypto Currencies
-To handle cases where a cryptocurrency code conflicts with an existing fiat currency code (like MNT, SOS, ERN), we use separate enums:
-- `FiatCurrencyCode::Mnt` - The fiat currency Mongolian Tugrik (MNT)
-- `CryptoCurrencyCode::Mnt` - The cryptocurrency version of MNT
-- `FiatCurrencyCode::Sos` - The fiat currency Somali Shilling (SOS)
-- `CryptoCurrencyCode::Sos` - The cryptocurrency version of SOS
-- `FiatCurrencyCode::Ern` - The fiat currency Eritrean Nakfa (ERN)
-- `CryptoCurrencyCode::Ern` - The cryptocurrency version of ERN
-
-### Numeric Prefix Handling
-For cryptocurrency codes that begin with numbers (like `1INCH`), the enum case name uses a descriptive word format instead of the number for PHP compatibility:
-- Case name: `OneInch`
-- Actual value: `'1INCH'`
-
-This is because PHP enum cases cannot start with a number, so we use a readable word representation while preserving the actual cryptocurrency code value.
-
-### CurrencyCode Utility Class
-The `CurrencyCode` class provides a utility method for creating currency code enum objects from numeric codes:
+`of()` accepts a major-unit decimal amount. `ofMinor()` accepts an integer amount in the currency's smallest unit. Use strings for values that may exceed PHP integer range.
 
 ```php
-use Sirix\Money\CurrencyCode;
+use Sirix\Money\Currency\DefaultCurrencyCatalog;
+use Sirix\Money\MoneyFactory;
+use Sirix\Money\MoneyFormatter;
 
-// Create a FiatCurrencyCode from a numeric code
-$usd = CurrencyCode::fromNumericCode(840); // Returns FiatCurrencyCode::Usd
+$factory = new MoneyFactory(new DefaultCurrencyCatalog());
+$formatter = new MoneyFormatter();
 
-// Create a CryptoCurrencyCode from a numeric code
-$btc = CurrencyCode::fromNumericCode(1004); // Returns CryptoCurrencyCode::Btc
+$usd = $factory->ofMinor('1099', 'USD');
+echo $formatter->amount($usd);       // 10.99
+echo $formatter->minorAmount($usd);  // 1099
+
+$bitcoin = $factory->ofMinor('123456789', 'BTC');
+echo $formatter->amount($bitcoin);   // 1.23456789
 ```
 
-The class automatically determines whether to create a FiatCurrencyCode or CryptoCurrencyCode based on the numeric code:
-- Numeric codes < 1000 are treated as fiat currencies
-- Numeric codes >= 1000 are treated as cryptocurrencies
+Catalogs are immutable and safe to construct at a long-running worker's bootstrap.
 
 ## Documentation
-For complete information about working with currencies in the Sirix Money library, including how to handle both cryptocurrency and fiat currency values, please refer to the currency code documentation in the docs directory.
 
-## Related Resources
-- [README.md](README.md) - Main library documentation and usage examples
-- [FiatCurrencyCode.md](./docs/FiatCurrencyCode.md) - Detailed documentation about fiat currency codes
-- [CryptoCurrencyCode.md](./docs/CryptoCurrencyCode.md) - Detailed documentation about cryptocurrency codes
-- [CurrencyCode.md](./docs/CurrencyCode.md) - Detailed documentation about the CurrencyCode utility class
-- [FullCryptoCurrencyList.md](./docs/FullCryptoCurrencyList.md) - Complete List of Available Cryptocurrency Codes
-- [FullFiatCurrencyList.md](./docs/FullFiatCurrencyList.md) - Complete List of Available Fiat Currency Codes
-
+| Guide | Description |
+| --- | --- |
+| [v2 design](docs/v2-design.md) | Public contract and deliberate breaking changes |
+| [Dependency injection](docs/integrations/dependency-injection.md) | Container and persistent-worker wiring |
+| [Built-in currencies](docs/currencies.md) | The source-controlled digital seed and ISO metadata source |
+| [Upgrading to v2](UPGRADING.md) | Migration from the v1 API |
 
 ## License
 
-MIT License
+MIT. See [LICENSE](LICENSE).

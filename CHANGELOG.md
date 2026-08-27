@@ -5,6 +5,16 @@ All notable changes to the Sirix Money library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-08-27
+
+### Breaking
+- Replaced mutable registries, enums, static construction, classification, and mandatory cache support with immutable injected catalogs and `MoneyFactory`.
+- Removed float amount input and v1 crypto enum/synthetic-numeric compatibility.
+
+### Changed
+- PHP 8.2 is the minimum supported version. ISO metadata now comes from Brick Money; the default digital seed is 20 curated currencies with stable numeric identifiers `1001` through `1020`.
+- See [UPGRADING.md](UPGRADING.md) for migration details.
+
 ## [1.2.0] - 31/05/2025
 
 ### Added
