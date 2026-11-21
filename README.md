@@ -9,7 +9,7 @@ Flexible, framework-agnostic currency catalogs and money factories for [Brick Mo
 - **Explicit, predictable construction** - create `Money` through `MoneyFactory` with documented rounding behaviour and support for major and minor units.
 - **Framework and worker friendly** - immutable catalogs have no cache, container, or static global state, so they can be created once at bootstrap and shared safely.
 
-Requires PHP 8.2 and `brick/money`.
+Requires PHP 8.3-8.6 and `brick/money`.
 
 ## Install
 
@@ -17,7 +17,7 @@ Requires PHP 8.2 and `brick/money`.
 composer require sirix/money:^2.0
 ```
 
-For a source checkout, install the package normally. Development tools are opt-in and require PHP 8.3+:
+For a source checkout, install the package normally. Development tools are opt-in:
 
 ```bash
 composer install

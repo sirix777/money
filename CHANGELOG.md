@@ -5,6 +5,12 @@ All notable changes to the Sirix Money library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-11-21
+
+### Changed
+- Added PHP 8.6 support and dropped PHP 8.2: the supported window is now PHP 8.3-8.6 (`~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0`; the previous constraint `^8.2` was open-ended). CI runs the full window; php-cs-fixer targets PHP 8.3.
+- Development dependency `phpunit/phpunit` is now `^12.5` (it requires PHP 8.3+).
+
 ## [2.0.1] - 2026-08-27
 
 ### Changed

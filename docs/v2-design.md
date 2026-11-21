@@ -1,6 +1,6 @@
 # v2 design contract
 
-v2 requires PHP 8.2 and is a clean break from v1. Its public services are `CurrencyCatalog`, `ArrayCurrencyCatalog`, `CompositeCurrencyCatalog`, `DefaultCurrencyCatalog`, `MoneyFactory`, and `MoneyFormatter`. Public boundaries validate the documented `BigNumber|int|string` amount and `Currency|int|string` currency inputs at runtime: they use `mixed` signatures to reject weak-mode PHP float coercion before it can change a monetary value.
+v2 requires PHP 8.3-8.6 and is a clean break from v1. Its public services are `CurrencyCatalog`, `ArrayCurrencyCatalog`, `CompositeCurrencyCatalog`, `DefaultCurrencyCatalog`, `MoneyFactory`, and `MoneyFormatter`. Public boundaries validate the documented `BigNumber|int|string` amount and `Currency|int|string` currency inputs at runtime: they use `mixed` signatures to reject weak-mode PHP float coercion before it can change a monetary value.
 
 Catalogs are immutable after construction. They eagerly index canonical uppercase non-empty string codes and unique non-zero numeric codes; code lookup is case-insensitive. Codes are not limited to an enum-shaped alphabet, so application catalogs may use values such as `A1` or `X-CHAIN`. Numeric `0` means no numeric identifier. Duplicate codes or non-zero numeric values fail at bootstrap. `CurrencyCatalogBuilder::replace()` is the only explicit replacement operation and produces a final validated catalog.
 

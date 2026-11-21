@@ -10,14 +10,14 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0",
         "brick/math": "^0.18 || ^0.19",
         "brick/money": "^0.14.1"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.45",
         "phpbench/phpbench": "^1.4",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^12.5"
     },
     "autoload": {
         "psr-4": {
